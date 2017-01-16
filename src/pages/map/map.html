@@ -1,0 +1,46 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Map</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+<ion-card>
+
+  <ion-item>
+    <ion-avatar item-left>
+      <img [src]="user.picture.thumbnail">
+    </ion-avatar>
+    <h2>{{ user.name.title }}. {{ user.name.first }} {{ user.name.last }}</h2>
+    <p>{{ user.email }}</p>
+  </ion-item>
+
+  <img [src]="user.picture.large">
+
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-label>Street</ion-label>
+        <ion-input type="text" [(ngModel)]="user.location.street"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>City</ion-label>
+        <ion-input type="text" [(ngModel)]="user.location.city"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>State</ion-label>
+        <ion-input type="text" [(ngModel)]="user.location.state"></ion-input>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+  
+  
+
+</ion-content>
