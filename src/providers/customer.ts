@@ -16,8 +16,9 @@ export class Customer {
         'Content-Type': 'application/json',
         'x-access-token': token
       });
+      let options = new RequestOptions({ headers: headers });
 
-      this.http.get(url)
+      this.http.get(url, options)
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);

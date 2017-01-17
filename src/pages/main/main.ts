@@ -9,27 +9,28 @@ import { IUser } from '../../../shared';
 import { MapPage } from '../map/map';
 import { LoginPage } from '../login/login';
 
-import { User } from '../../providers/user';
+import { Customer } from '../../providers/customer';
 
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html',
-  providers: [User]
+  providers: [Customer]
 })
 export class MainPage {
-  users: Array<IUser> = [];
+  customers: Array<any> = [];
   // users: Array<any>;
   // users: Array<Object>;
   // users: Array<{ id: number, name: string, telephone: string }>;
-  
+  token: string;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public userProvider: User,
+    public customerProvider: Customer,
     public loadingCtrl: LoadingController,
     public app: App
   ) {
-
+    this.token = localStorage.getItem('token');
   }
 
   logout() {
@@ -54,11 +55,28 @@ export class MainPage {
     });
     loading.present();
 
-    this.userProvider.getUsers()
-      .then((data:any) => {
-        loading.dismiss();
-        this.users = data.results;
+    this.customerProvider.getCustomers(this.token)
+      .then((data: any) => {
+         loading.dismiss();
+        if (data.ok) {
+          // this.customers = data.rows;
+          data.rows.forEach(v => {
+            let obj: any = {
+              id: v.id,
+              first_name: v.first_name,
+              last_name: v.last_name,
+              email: v.email,
+              image: v.image ? 'data:image/jpeg;base64,' + v.image : null
+            };
+            this.customers.push(obj);
+          });
+        } else {
+          if (data.code === 403) {
+            this.logout();
+          }
+        }
       }, error => {
+        console.log(error);
         loading.dismiss();
       });
   }  
