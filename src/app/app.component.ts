@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { TabsPage } from '../pages/tabs/tabs';
@@ -10,11 +10,34 @@ import { LoginPage } from '../pages/login/login';
 })
 export class MyApp {
   rootPage: any;
-
-  constructor(platform: Platform) {
+  
+  constructor(platform: Platform, private alertCtrl: AlertController) {
+    let that = this;
     platform.ready().then(() => {
       StatusBar.styleDefault();
       Splashscreen.hide();
+
+      platform.registerBackButtonAction(() => {
+        let confirm = that.alertCtrl.create({
+          title: 'Exit app?',
+          message: 'คุณต้องการออกจากแอพลิเคชัน ใช่หรือไม่?',
+          buttons: [
+            {
+              text: 'ไม่ใช่',
+              handler: () => {
+                // console.log('Disagree clicked');
+              }
+            },
+            {
+              text: 'ใช่',
+              handler: () => {
+                platform.exitApp();
+              }
+            }
+          ]
+        });
+        confirm.present();
+      });      
 
 
       let token = localStorage.getItem('token');
@@ -23,7 +46,7 @@ export class MyApp {
       } else {
         this.rootPage = LoginPage;
       }
-      
+
     });
   }
 }
