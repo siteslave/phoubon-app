@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController } from 'ionic-angular';
+import {
+  NavController,
+  NavParams,
+  LoadingController,
+  App
+} from 'ionic-angular';
 import { IUser } from '../../../shared';
 import { MapPage } from '../map/map';
+import { LoginPage } from '../login/login';
 
 import { User } from '../../providers/user';
 
@@ -20,11 +26,18 @@ export class MainPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public userProvider: User,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    public app: App
   ) {
 
   }
 
+  logout() {
+    localStorage.removeItem('token');
+    let nav = this.app.getRootNav();
+    nav.setRoot(LoginPage);
+  } 
+  
   goDetail(user: IUser) {
     let params = {xx: 'xxx', yy: 'yyy', zzz: ['A', 'B', 'C']};
     this.navCtrl.push(MapPage, user);
