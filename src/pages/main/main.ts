@@ -55,6 +55,8 @@ export class MainPage {
     });
     loading.present();
 
+    this.customers = [];
+    
     this.customerProvider.getCustomers(this.token)
       .then((data: any) => {
         loading.dismiss();
@@ -86,7 +88,4 @@ export class MainPage {
   ionViewWillEnter() {
     this.getUsers();
   }
-
-
-
 }
