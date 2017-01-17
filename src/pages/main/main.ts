@@ -57,7 +57,7 @@ export class MainPage {
 
     this.customerProvider.getCustomers(this.token)
       .then((data: any) => {
-         loading.dismiss();
+        loading.dismiss();
         if (data.ok) {
           // this.customers = data.rows;
           data.rows.forEach(v => {
@@ -73,6 +73,8 @@ export class MainPage {
         } else {
           if (data.code === 403) {
             this.logout();
+          } else {
+            console.log(data.error);
           }
         }
       }, error => {
