@@ -10,6 +10,7 @@ import { ContactPage } from '../pages/contact/contact';
 import { MessagePage } from '../pages/message/message';
 import { SettingPage } from '../pages/setting/setting';
 import { TabsPage } from '../pages/tabs/tabs';
+import { LoginPage } from '../pages/login/login';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TabsPage } from '../pages/tabs/tabs';
     ContactPage,
     MessagePage,
     SettingPage,
-    TabsPage
+    TabsPage,
+    LoginPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -34,9 +36,11 @@ import { TabsPage } from '../pages/tabs/tabs';
     ContactPage,
     MessagePage,
     SettingPage,
-    TabsPage
+    TabsPage,
+    LoginPage
   ],
   providers: [
+    { provide: 'API_URL', useValue: 'http://localhost:3000' },
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

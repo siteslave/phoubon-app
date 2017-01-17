@@ -11,7 +11,7 @@ import { User } from '../../providers/user';
   providers: [User]
 })
 export class MainPage {
-  users: Array<any> = [];
+  users: Array<IUser> = [];
   // users: Array<any>;
   // users: Array<Object>;
   // users: Array<{ id: number, name: string, telephone: string }>;
@@ -26,6 +26,7 @@ export class MainPage {
   }
 
   goDetail(user: IUser) {
+    let params = {xx: 'xxx', yy: 'yyy', zzz: ['A', 'B', 'C']};
     this.navCtrl.push(MapPage, user);
   } 
   
@@ -41,7 +42,7 @@ export class MainPage {
     loading.present();
 
     this.userProvider.getUsers()
-      .then((data: any) => {
+      .then((data:any) => {
         loading.dismiss();
         this.users = data.results;
       }, error => {
