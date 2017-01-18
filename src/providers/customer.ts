@@ -11,7 +11,7 @@ export class Customer {
 
   getCustomers(token: string, limit: number, offset: number) {
     return new Promise((resolve, reject) => {
-      let url = `${this.url}/customers/${limit}/${offset}`;
+    let url = `${this.url}/customers/${limit}/${offset}`;
       let headers = new Headers({
         'Content-Type': 'application/json',
         'x-access-token': token

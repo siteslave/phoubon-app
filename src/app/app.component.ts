@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform, AlertController } from 'ionic-angular';
+import { Platform, AlertController, Events, App } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { TabsPage } from '../pages/tabs/tabs';
@@ -11,11 +11,22 @@ import { LoginPage } from '../pages/login/login';
 export class MyApp {
   rootPage: any;
   
-  constructor(platform: Platform, private alertCtrl: AlertController) {
+  constructor(
+    platform: Platform,
+    private alertCtrl: AlertController,
+    private events: Events,
+    private app: App
+  ) {
     let that = this;
     platform.ready().then(() => {
       StatusBar.styleDefault();
       Splashscreen.hide();
+
+      that.events.subscribe('logout', () => {
+        localStorage.removeItem('token');
+        let nav = this.app.getRootNav();
+        nav.setRoot(LoginPage);
+      });
 
       platform.registerBackButtonAction(() => {
         let confirm = that.alertCtrl.create({

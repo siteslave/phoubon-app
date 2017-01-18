@@ -3,7 +3,8 @@ import {
   NavController,
   NavParams,
   LoadingController,
-  App
+  App,
+  Events
 } from 'ionic-angular';
 import { IUser } from '../../../shared';
 import { MapPage } from '../map/map';
@@ -32,16 +33,19 @@ export class MainPage {
     public navParams: NavParams,
     public customerProvider: Customer,
     public loadingCtrl: LoadingController,
-    public app: App
+    public app: App,
+    public events: Events
   ) {
     this.token = localStorage.getItem('token');
   }
 
   logout() {
-    localStorage.removeItem('token');
-    let nav = this.app.getRootNav();
-    nav.setRoot(LoginPage);
+    this.events.publish('logout');
   } 
+
+  addNotify() {
+    this.events.publish('addNotify');
+  }
 
   add() {
     this.navCtrl.push(AddCustomerPage);

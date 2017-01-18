@@ -1,6 +1,6 @@
 <ion-tabs>
   <ion-tab tabIcon="home" tabTitle="หน้าหลัก" [root]="tabMain"></ion-tab>
   <ion-tab tabIcon="contacts" tabTitle="ติดต่อ" [root]="tabContact"></ion-tab>
-  <ion-tab tabIcon="chatboxes" tabTitle="ข้อความ" [root]="tabMessage"></ion-tab>
+  <ion-tab tabIcon="chatboxes" [tabBadge]="notifyCount" tabTitle="ข้อความ" [root]="tabMessage"></ion-tab>
   <ion-tab tabIcon="settings" tabTitle="ตั้งค่า" [root]="tabSetting"></ion-tab>
 </ion-tabs>

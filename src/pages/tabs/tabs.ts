@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Events } from 'ionic-angular';
 
 import { MainPage } from '../main/main';
 import { ContactPage } from '../contact/contact';
@@ -15,12 +15,22 @@ export class TabsPage {
   tabContact: any;
   tabMessage: any;
   tabSetting: any;
+  notifyCount: number = 0;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public events: Events
+  ) {
     this.tabMain = MainPage;
     this.tabContact = ContactPage;
     this.tabMessage = MessagePage;
     this.tabSetting = SettingPage;
+
+    this.events.subscribe('addNotify', () => {
+      this.notifyCount++;
+    });
+    
   }
 
 }
