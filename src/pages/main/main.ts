@@ -8,6 +8,7 @@ import {
 import { IUser } from '../../../shared';
 import { MapPage } from '../map/map';
 import { LoginPage } from '../login/login';
+import { AddCustomerPage } from '../add-customer/add-customer';
 
 import { Customer } from '../../providers/customer';
 
@@ -38,6 +39,10 @@ export class MainPage {
     let nav = this.app.getRootNav();
     nav.setRoot(LoginPage);
   } 
+
+  add() {
+    this.navCtrl.push(AddCustomerPage);
+  }
   
   goDetail(user: IUser) {
     let params = {xx: 'xxx', yy: 'yyy', zzz: ['A', 'B', 'C']};

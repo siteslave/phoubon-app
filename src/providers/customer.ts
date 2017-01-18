@@ -28,4 +28,51 @@ export class Customer {
       
     });   
   }
+
+  getCustomerTypes(token: string) {
+    return new Promise((resolve, reject) => {
+      let url = `${this.url}/customers/customer-types`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+
+      this.http.get(url, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
+
+  save(token: string, customer: any) {
+    return new Promise((resolve, reject) => {
+      let url = `${this.url}/customers`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+      let body = {
+        first_name: customer.firstName,
+        last_name: customer.lastName,
+        sex: customer.sex,
+        customer_type_id: customer.customerTypeId,
+        telephone: customer.telephone,
+        email: customer.email
+      }
+      this.http.post(url, body, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
 }
