@@ -3,8 +3,10 @@ import {
   NavController,
   NavParams,
   LoadingController,
+  ActionSheetController,
   App,
-  Events
+  Events,
+  Platform
 } from 'ionic-angular';
 import { IUser } from '../../../shared';
 import { MapPage } from '../map/map';
@@ -34,7 +36,9 @@ export class MainPage {
     public customerProvider: Customer,
     public loadingCtrl: LoadingController,
     public app: App,
-    public events: Events
+    public events: Events,
+    public actionSheetCtrl: ActionSheetController,
+    public platform: Platform
   ) {
     this.token = localStorage.getItem('token');
   }
@@ -51,9 +55,52 @@ export class MainPage {
     this.navCtrl.push(AddCustomerPage);
   }
   
-  goDetail(user: IUser) {
-    let params = {xx: 'xxx', yy: 'yyy', zzz: ['A', 'B', 'C']};
-    this.navCtrl.push(MapPage, user);
+  presentActionSheet(customer: any) {
+       let actionSheet = this.actionSheetCtrl.create({
+      title: 'Action menu',
+      buttons: [
+        {
+          text: 'ลบข้อมูล',
+          role: 'destructive',
+          icon: !this.platform.is('ios') ? 'trash': null,
+          handler: () => { 
+            console.log(customer);
+            this.customerProvider.remove(this.token, customer.id)
+              .then((res: any) => {
+                this.getUsers();
+               }, (error) => { });
+          }
+        },
+        {
+          text: 'แก้ไข',
+          icon: !this.platform.is('ios') ? 'create': null,
+          handler: () => {
+
+          }
+        },
+        {
+          text: 'ดู/กำหนด แผนที่',
+          icon: !this.platform.is('ios') ? 'map': null,
+          handler: () => { 
+       
+          }
+        },
+        {
+          text: 'โทร',
+          icon: !this.platform.is('ios') ? 'call': null,
+          handler: () => {
+
+          }
+        },
+        {
+          text: 'ยกเลิก',
+          role: 'cancel',
+          icon: !this.platform.is('ios') ? 'close': null,
+          handler: () => { }
+        }
+      ]
+    });
+    actionSheet.present();
   } 
   
   ionViewDidLoad() {

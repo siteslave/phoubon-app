@@ -69,6 +69,26 @@ export class Customer {
     });   
   }
 
+  remove(token: string, id: string) {
+    return new Promise((resolve, reject) => {
+      let url = `${this.url}/customers/${id}`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+
+      this.http.delete(url, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
+
   save(token: string, customer: any) {
     return new Promise((resolve, reject) => {
       let url = `${this.url}/customers`;

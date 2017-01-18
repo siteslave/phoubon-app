@@ -34,7 +34,7 @@
   </ion-fab>
 
   <ion-list no-lines>
-    <button (click)="goDetail(customer)" 
+    <button (click)="presentActionSheet(customer)" 
       ion-item *ngFor="let customer of customers">
       <ion-avatar item-left>
         <img [src]="customer.image">

@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { Customer } from '../../providers/customer';
 
-import * as numeral from 'numeral';
-
 @Component({
   selector: 'page-add-customer',
   templateUrl: 'add-customer.html',
@@ -30,8 +28,6 @@ export class AddCustomerPage {
     this.token = localStorage.getItem('token');
     this.sexes.push({ id: 1, name: 'ชาย' });
     this.sexes.push({ id: 2, name: 'หญิง' });
-    let _myNumber = numeral(11000);
-    this.myNumber = _myNumber.format('0,0.00');
   }
 
   _doSave() {
