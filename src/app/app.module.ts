@@ -48,7 +48,7 @@ import { AgmCoreModule } from 'angular2-google-maps/core';
     AddCustomerPage
   ],
   providers: [
-    { provide: 'API_URL', useValue: 'http://localhost:3000' },
+    { provide: 'API_URL', useValue: 'http://192.168.43.224:3000' },
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
