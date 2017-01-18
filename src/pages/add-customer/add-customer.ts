@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { Customer } from '../../providers/customer';
+
+import * as numeral from 'numeral';
 
 @Component({
   selector: 'page-add-customer',
@@ -17,18 +19,23 @@ export class AddCustomerPage {
   token: string;
   sexes: Array<{ id: number, name: string }> = [];
   groups: Array<any>;
+  myNumber: string;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public customerProvider: Customer
+    public customerProvider: Customer,
+    public alertCtrl: AlertController
   ) {
     this.token = localStorage.getItem('token');
     this.sexes.push({ id: 1, name: 'ชาย' });
     this.sexes.push({ id: 2, name: 'หญิง' });
+    let _myNumber = numeral(11000);
+    this.myNumber = _myNumber.format('0,0.00');
   }
 
-  save() {
+  _doSave() {
+  
     let customer: any = {
       firstName: this.firstName,
       lastName: this.lastName,
@@ -42,6 +49,8 @@ export class AddCustomerPage {
       .then((res: any) => {
         if (res.ok) {
           // success
+          sessionStorage.setItem('isBack', '1');
+          this.navCtrl.pop();
         } else {
           // ok=false
           if (res.code === 403) {
@@ -53,6 +62,28 @@ export class AddCustomerPage {
       }, (error) => {
         console.log(error);
       });
+  }  
+
+  save() {
+
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure?',
+      message: 'ต้องการบันทึก ใช่หรือไม่?',
+      buttons: [
+        {
+          text: 'ไม่',
+          handler: () => {}
+        },
+        {
+          text: 'ใช่',
+          handler: () => {
+            this._doSave();
+          }
+        }
+      ]
+    });
+    confirm.present();
+
   }  
 
   ionViewDidLoad() {

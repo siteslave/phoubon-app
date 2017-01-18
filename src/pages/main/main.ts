@@ -23,6 +23,9 @@ export class MainPage {
   // users: Array<Object>;
   // users: Array<{ id: number, name: string, telephone: string }>;
   token: string;
+  total: number = 0;
+  startRecord: number = 0;
+  perPage: number = 6;
 
   constructor(
     public navCtrl: NavController,
@@ -62,7 +65,10 @@ export class MainPage {
 
     this.customers = [];
     
-    this.customerProvider.getCustomers(this.token)
+    let limit = this.perPage;
+    let offset = 0;
+
+    this.customerProvider.getCustomers(this.token, limit, offset)
       .then((data: any) => {
         loading.dismiss();
         if (data.ok) {
@@ -91,6 +97,50 @@ export class MainPage {
   }  
 
   ionViewWillEnter() {
-    this.getUsers();
+    this.customerProvider.getTotal(this.token)
+      .then((res: any) => {
+        this.total = res.total;
+        this.getUsers();
+      });
+  }
+
+  doInfinite(infiniteScroll) {
+    if (this.startRecord <= this.total) {
+      this.startRecord += this.perPage;
+
+      let limit = this.perPage;
+      let offset = this.startRecord;
+
+      this.customerProvider.getCustomers(this.token, limit, offset)
+        .then((data: any) => {
+          infiniteScroll.complete();
+          if (data.ok) {
+            // this.customers = data.rows;
+            data.rows.forEach(v => {
+              let obj: any = {
+                id: v.id,
+                first_name: v.first_name,
+                last_name: v.last_name,
+                email: v.email,
+                image: v.image ? 'data:image/jpeg;base64,' + v.image : null
+              };
+              this.customers.push(obj);
+            });
+          } else {
+            infiniteScroll.complete();
+            if (data.code === 403) {
+              this.logout();
+            } else {
+              console.log(data.error);
+            }
+          }
+        }, error => {
+          infiniteScroll.complete();
+          console.log(error);
+        });
+      
+    } else {
+      infiniteScroll.complete();
+    }
   }
 }

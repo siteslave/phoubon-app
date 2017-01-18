@@ -9,9 +9,29 @@ export class Customer {
     public http: Http,
     @Inject('API_URL') public url: string) { }
 
-  getCustomers(token: string) {
+  getCustomers(token: string, limit: number, offset: number) {
     return new Promise((resolve, reject) => {
-      let url = `${this.url}/customers`;
+      let url = `${this.url}/customers/${limit}/${offset}`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+
+      this.http.get(url, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
+
+  getTotal(token: string) {
+    return new Promise((resolve, reject) => {
+      let url = `${this.url}/customers/total`;
       let headers = new Headers({
         'Content-Type': 'application/json',
         'x-access-token': token
