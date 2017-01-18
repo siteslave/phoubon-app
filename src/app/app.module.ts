@@ -13,6 +13,8 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { AddCustomerPage } from '../pages/add-customer/add-customer';
 
+import { AgmCoreModule } from 'angular2-google-maps/core';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -27,6 +29,9 @@ import { AddCustomerPage } from '../pages/add-customer/add-customer';
     AddCustomerPage
   ],
   imports: [
+    AgmCoreModule.forRoot({
+        apiKey: 'AIzaSyAVLBNFbC7sKFsfo9D0XGuF2vGnSrl9xtE'
+    }),
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],

@@ -1,33 +1,66 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { IUser } from '../../../shared';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
+import { Customer } from '../../providers/customer';
 
-interface IUser2 extends IUser {
-  email: string
-}
 @Component({
   selector: 'page-map',
-  templateUrl: 'map.html'
+  templateUrl: 'map.html',
+  providers: [Customer]
 })
 export class MapPage {
-  user: any;
-  user2: IUser2;
-  name: string;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.user = this.navParams.data;
-    this.user2 = this.navParams.data;
+  lat: number = 15.2247057;
+  lng: number = 104.8554494;
+  zoomLevel: number = 18;
+  customerLat: number;
+  customerLng: number;
+  customerName: string;
+  id: number;
 
-    this.name = this.navParams.get('id');
-    let yyy = this.navParams.get('yy');
-    // this.user = {
-    //   id: this.navParams.get('id'),
-    //   name: this.navParams.get('name'),
-    //   telephone: this.navParams.get('telephone')
-    // }
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public customerProvider: Customer,
+    public toastCtrl: ToastController
+  ) {
+    this.customerName = this.navParams.get('first_name') + ' ' + this.navParams.get('last_name');
+    let lat = this.navParams.get('lat');
+    let lng = this.navParams.get('lng');
+    this.id = this.navParams.get('id');
+
+    if (lat && lng) {
+      // marker
+      this.customerLat = lat;
+      this.customerLng = lng;
+      // set center
+      this.lat = lat;
+      this.lng = lng;
+    }
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad MapPage');
+  mapClick(event: any) {
+    console.log(event);
+    this.customerLat = event.coords.lat;
+    this.customerLng = event.coords.lng;
+  }
+
+  save() {
+    let token = localStorage.getItem('token');
+    this.customerProvider.saveMap(token, this.id, this.customerLat, this.customerLng)
+      .then((res: any) => {
+        if (res.ok) {
+          // success
+          let toast = this.toastCtrl.create({
+            message: 'Map save successfully',
+            duration: 3000
+          });
+          toast.present();
+        } else {
+          // error
+          console.log(res.error);
+        }
+      }, (error) => {
+        // connection error
+      });
   }
 
 }

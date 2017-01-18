@@ -56,7 +56,7 @@ export class MainPage {
   }
   
   presentActionSheet(customer: any) {
-       let actionSheet = this.actionSheetCtrl.create({
+    let actionSheet = this.actionSheetCtrl.create({
       title: 'Action menu',
       buttons: [
         {
@@ -67,7 +67,9 @@ export class MainPage {
             console.log(customer);
             this.customerProvider.remove(this.token, customer.id)
               .then((res: any) => {
-                this.getUsers();
+                if (res.ok) {
+                  this.getUsers();
+                }
                }, (error) => { });
           }
         },
@@ -82,7 +84,7 @@ export class MainPage {
           text: 'ดู/กำหนด แผนที่',
           icon: !this.platform.is('ios') ? 'map': null,
           handler: () => { 
-       
+            this.navCtrl.push(MapPage, customer);
           }
         },
         {
@@ -127,6 +129,8 @@ export class MainPage {
           data.rows.forEach(v => {
             let obj: any = {
               id: v.id,
+              lat: v.lat,
+              lng: v.lng,
               first_name: v.first_name,
               last_name: v.last_name,
               email: v.email,
@@ -170,6 +174,8 @@ export class MainPage {
             data.rows.forEach(v => {
               let obj: any = {
                 id: v.id,
+                lat: v.lat,
+                lng: v.lng,
                 first_name: v.first_name,
                 last_name: v.last_name,
                 email: v.email,

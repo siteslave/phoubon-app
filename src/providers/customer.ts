@@ -115,4 +115,27 @@ export class Customer {
       
     });   
   }
+
+  saveMap(token: string, id: number, lat: number, lng: number) {
+    return new Promise((resolve, reject) => {
+      let url = `${this.url}/customers/map/${id}`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+      let body = {
+        lat: lat,
+        lng: lng
+      }
+      this.http.put(url, body, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
 }
