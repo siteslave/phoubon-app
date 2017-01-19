@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { Customer } from '../../providers/customer';
 
+import { Camera, CameraOptions } from 'ionic-native';
+
 @Component({
   selector: 'page-add-customer',
   templateUrl: 'add-customer.html',
@@ -18,6 +20,8 @@ export class AddCustomerPage {
   sexes: Array<{ id: number, name: string }> = [];
   groups: Array<any>;
   myNumber: string;
+  base64Image: string;
+  imageData: string;
 
   constructor(
     public navCtrl: NavController,
@@ -30,6 +34,40 @@ export class AddCustomerPage {
     this.sexes.push({ id: 2, name: 'หญิง' });
   }
 
+  takePicture() {
+    let options: CameraOptions = {
+      quality: 60,
+      destinationType: 0,
+      sourceType: 1,
+      allowEdit: true
+    };
+
+    Camera.getPicture(options).then((imageData) => {
+      this.base64Image = 'data:image/jpeg;base64,' + imageData;
+      this.imageData = imageData;
+      // console.log(base64Image);
+    }, (err) => {
+      // Handle error
+    });
+  }
+
+  browsePicture() {
+    let options: CameraOptions = {
+      quality: 60,
+      destinationType: 0,
+      sourceType: 0,
+      allowEdit: true
+    };
+
+    Camera.getPicture(options).then((imageData) => {
+      this.base64Image = 'data:image/jpeg;base64,' + imageData;
+      this.imageData = imageData;
+      // console.log(base64Image);
+    }, (err) => {
+      // Handle error
+    });
+  }
+
   _doSave() {
   
     let customer: any = {
@@ -38,7 +76,8 @@ export class AddCustomerPage {
       sex: this.sex,
       telephone: this.telephone,
       email: this.email,
-      customerTypeId: this.customerTypeId
+      customerTypeId: this.customerTypeId,
+      image: this.imageData
     };
 
     this.customerProvider.save(this.token, customer)

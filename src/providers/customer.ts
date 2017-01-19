@@ -103,7 +103,8 @@ export class Customer {
         sex: customer.sex,
         customer_type_id: customer.customerTypeId,
         telephone: customer.telephone,
-        email: customer.email
+        email: customer.email,
+        image: customer.image
       }
       this.http.post(url, body, options)
         .map(res => res.json())
