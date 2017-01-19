@@ -29,6 +29,27 @@ export class Customer {
     });   
   }
 
+  search(token: string, query: string) {
+    return new Promise((resolve, reject) => {
+    let url = `${this.url}/customers/search`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+      let body = { query: query };
+
+      this.http.post(url, body, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
+
   getTotal(token: string) {
     return new Promise((resolve, reject) => {
       let url = `${this.url}/customers/total`;

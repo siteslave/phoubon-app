@@ -13,20 +13,16 @@
     </ion-buttons>
   </ion-navbar>
   <ion-toolbar color="primary">
-    <ion-searchbar (ionInput)="search($event)" 
-    (ionClear)="getCustomers()" debounce="1000">
+    <ion-searchbar 
+    (ionInput)="search($event)" 
+    [(ngModel)]="query"
+    (ionClear)="getUsers()" 
+    debounce="2000">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Refreshing..."
-      ></ion-refresher-content>
-  </ion-refresher>
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="add()">
       <ion-icon name="person-add"></ion-icon>

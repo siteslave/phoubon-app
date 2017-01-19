@@ -29,6 +29,7 @@ export class MainPage {
   total: number = 0;
   startRecord: number = 0;
   perPage: number = 6;
+  query: string = null;
 
   constructor(
     public navCtrl: NavController,
@@ -53,6 +54,57 @@ export class MainPage {
 
   add() {
     this.navCtrl.push(AddCustomerPage);
+  }
+
+  _doSearch(query) {
+    let loading = this.loadingCtrl.create({
+        content: 'Searching...',
+        spinner: 'dots'
+      });
+    loading.present();
+    this.customers = [];
+
+    this.customerProvider.search(this.token, this.query)
+      .then((data: any) => {
+        loading.dismiss();
+        if (data.ok) {
+          // this.customers = data.rows;
+          data.rows.forEach(v => {
+            let obj: any = {
+              id: v.id,
+              lat: v.lat,
+              lng: v.lng,
+              sex: v.sex,
+              customer_type_id: v.customer_type_id,
+              first_name: v.first_name,
+              last_name: v.last_name,
+              telephone: v.telephone,
+              email: v.email,
+              imageBase64: v.image,
+              image: v.image ? 'data:image/jpeg;base64,' + v.image : null
+            };
+            this.customers.push(obj);
+          });
+        } else {
+          if (data.code === 403) {
+            this.logout();
+          } else {
+            console.log(data.error);
+          }
+        }
+      }, error => {
+        console.log(error);
+        loading.dismiss();
+      });
+  }
+  
+  search(event) {
+    this.query = event.target.value || null;
+    if (this.query) {
+      if (this.query.length >= 2) {
+        this._doSearch(this.query);
+      }
+    }
   }
   
   presentActionSheet(customer: any) {
@@ -156,11 +208,15 @@ export class MainPage {
   }  
 
   ionViewWillEnter() {
-    this.customerProvider.getTotal(this.token)
-      .then((res: any) => {
-        this.total = res.total;
-        this.getUsers();
-      });
+    if (this.query) {
+      this._doSearch(this.query);
+    } else {
+      this.customerProvider.getTotal(this.token)
+        .then((res: any) => {
+          this.total = res.total;
+          this.getUsers();
+        });
+    }
   }
 
   doInfinite(infiniteScroll) {
