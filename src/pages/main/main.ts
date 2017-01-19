@@ -77,7 +77,7 @@ export class MainPage {
           text: 'แก้ไข',
           icon: !this.platform.is('ios') ? 'create': null,
           handler: () => {
-
+            this.navCtrl.push(AddCustomerPage, customer);
           }
         },
         {
@@ -131,9 +131,13 @@ export class MainPage {
               id: v.id,
               lat: v.lat,
               lng: v.lng,
+              sex: v.sex,
+              customer_type_id: v.customer_type_id,
               first_name: v.first_name,
               last_name: v.last_name,
+              telephone: v.telephone,
               email: v.email,
+              imageBase64: v.image,
               image: v.image ? 'data:image/jpeg;base64,' + v.image : null
             };
             this.customers.push(obj);
@@ -176,9 +180,13 @@ export class MainPage {
                 id: v.id,
                 lat: v.lat,
                 lng: v.lng,
+                sex: v.sex,
+                telephone: v.telephone,
+                customer_type_id: v.customer_type_id,
                 first_name: v.first_name,
                 last_name: v.last_name,
                 email: v.email,
+                imageBase64: v.image,
                 image: v.image ? 'data:image/jpeg;base64,' + v.image : null
               };
               this.customers.push(obj);

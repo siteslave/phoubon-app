@@ -117,6 +117,35 @@ export class Customer {
     });   
   }
 
+  update(token: string, customer: any) {
+    return new Promise((resolve, reject) => {
+      let url = `${this.url}/customers`;
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'x-access-token': token
+      });
+      let options = new RequestOptions({ headers: headers });
+      let body = {
+        id: customer.id,
+        first_name: customer.firstName,
+        last_name: customer.lastName,
+        sex: customer.sex,
+        customer_type_id: customer.customerTypeId,
+        telephone: customer.telephone,
+        email: customer.email,
+        image: customer.image
+      }
+      this.http.put(url, body, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        }, error => {
+          reject('Connection error');
+        });
+      
+    });   
+  }
+
   saveMap(token: string, id: number, lat: number, lng: number) {
     return new Promise((resolve, reject) => {
       let url = `${this.url}/customers/map/${id}`;

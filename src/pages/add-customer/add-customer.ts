@@ -22,6 +22,7 @@ export class AddCustomerPage {
   myNumber: string;
   base64Image: string;
   imageData: string;
+  id: number;
 
   constructor(
     public navCtrl: NavController,
@@ -32,6 +33,8 @@ export class AddCustomerPage {
     this.token = localStorage.getItem('token');
     this.sexes.push({ id: 1, name: 'ชาย' });
     this.sexes.push({ id: 2, name: 'หญิง' });
+
+    this.id = this.navParams.get('id');
   }
 
   takePicture() {
@@ -77,26 +80,34 @@ export class AddCustomerPage {
       telephone: this.telephone,
       email: this.email,
       customerTypeId: this.customerTypeId,
-      image: this.imageData
+      image: this.imageData,
+      id: this.id
     };
 
-    this.customerProvider.save(this.token, customer)
-      .then((res: any) => {
-        if (res.ok) {
-          // success
-          sessionStorage.setItem('isBack', '1');
-          this.navCtrl.pop();
+    let promise;
+    if (this.id) {
+      // update
+      promise = this.customerProvider.update(this.token, customer);
+    } else {
+      // insert
+      promise = this.customerProvider.save(this.token, customer);
+    }
+    
+    promise.then((res: any) => {
+      if (res.ok) {
+        // success
+        this.navCtrl.pop();
+      } else {
+        // ok=false
+        if (res.code === 403) {
+          // redirect to login page
         } else {
-          // ok=false
-          if (res.code === 403) {
-            // redirect to login page
-          } else {
-            console.log(res.error);
-          }
+          console.log(res.error);
         }
-      }, (error) => {
-        console.log(error);
-      });
+      }
+    }, (error) => {
+      console.log(error);
+    });
   }  
 
   save() {
@@ -132,6 +143,19 @@ export class AddCustomerPage {
       }, (error) => { 
         console.log(error);
        });
+  }
+
+  ionViewWillEnter() {
+    if (this.id) {
+      this.firstName = this.navParams.get('first_name');
+      this.lastName = this.navParams.get('last_name');
+      this.sex = this.navParams.get('sex');
+      this.customerTypeId = this.navParams.get('customer_type_id');
+      this.telephone = this.navParams.get('telephone');
+      this.email = this.navParams.get('email');
+      this.imageData = this.navParams.get('imageBase64');
+      this.base64Image = this.navParams.get('image');
+    }
   }
 
 }
