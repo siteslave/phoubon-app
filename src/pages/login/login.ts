@@ -4,6 +4,7 @@ import { Login } from '../../providers/login';
 import { Encrypt } from '../../providers/encrypt';
 
 import { TabsPage } from '../tabs/tabs';
+import { Push } from 'ionic-native';
 
 @Component({
   selector: 'page-login',
