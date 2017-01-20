@@ -14,11 +14,12 @@ import { LoginPage } from '../login/login';
 import { AddCustomerPage } from '../add-customer/add-customer';
 
 import { Customer } from '../../providers/customer';
+import { Encrypt } from '../../providers/encrypt';
 
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html',
-  providers: [Customer]
+  providers: [Customer, Encrypt]
 })
 export class MainPage {
   customers: Array<any> = [];
@@ -39,14 +40,15 @@ export class MainPage {
     public app: App,
     public events: Events,
     public actionSheetCtrl: ActionSheetController,
-    public platform: Platform
+    public platform: Platform,
+    public encryptProvider: Encrypt
   ) {
     this.token = localStorage.getItem('token');
   }
 
   logout() {
     this.events.publish('logout');
-  } 
+  }
 
   addNotify() {
     this.events.publish('addNotify');
@@ -58,9 +60,9 @@ export class MainPage {
 
   _doSearch(query) {
     let loading = this.loadingCtrl.create({
-        content: 'Searching...',
-        spinner: 'dots'
-      });
+      content: 'Searching...',
+      spinner: 'dots'
+    });
     loading.present();
     this.customers = [];
 
@@ -69,7 +71,11 @@ export class MainPage {
         loading.dismiss();
         if (data.ok) {
           // this.customers = data.rows;
-          data.rows.forEach(v => {
+          let encryptedtext = data.data;
+          let decryptedText = this.encryptProvider.decrypt(encryptedtext);
+          let rows = JSON.parse(decryptedText);
+
+          rows.forEach(v => {
             let obj: any = {
               id: v.id,
               lat: v.lat,
@@ -104,9 +110,11 @@ export class MainPage {
       if (this.query.length >= 2) {
         this._doSearch(this.query);
       }
+    } else {
+      this.getUsers();
     }
   }
-  
+
   presentActionSheet(customer: any) {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Action menu',
@@ -114,34 +122,34 @@ export class MainPage {
         {
           text: 'ลบข้อมูล',
           role: 'destructive',
-          icon: !this.platform.is('ios') ? 'trash': null,
-          handler: () => { 
+          icon: !this.platform.is('ios') ? 'trash' : null,
+          handler: () => {
             console.log(customer);
             this.customerProvider.remove(this.token, customer.id)
               .then((res: any) => {
                 if (res.ok) {
                   this.getUsers();
                 }
-               }, (error) => { });
+              }, (error) => { });
           }
         },
         {
           text: 'แก้ไข',
-          icon: !this.platform.is('ios') ? 'create': null,
+          icon: !this.platform.is('ios') ? 'create' : null,
           handler: () => {
             this.navCtrl.push(AddCustomerPage, customer);
           }
         },
         {
           text: 'ดู/กำหนด แผนที่',
-          icon: !this.platform.is('ios') ? 'map': null,
-          handler: () => { 
+          icon: !this.platform.is('ios') ? 'map' : null,
+          handler: () => {
             this.navCtrl.push(MapPage, customer);
           }
         },
         {
           text: 'โทร',
-          icon: !this.platform.is('ios') ? 'call': null,
+          icon: !this.platform.is('ios') ? 'call' : null,
           handler: () => {
 
           }
@@ -149,14 +157,14 @@ export class MainPage {
         {
           text: 'ยกเลิก',
           role: 'cancel',
-          icon: !this.platform.is('ios') ? 'close': null,
+          icon: !this.platform.is('ios') ? 'close' : null,
           handler: () => { }
         }
       ]
     });
     actionSheet.present();
-  } 
-  
+  }
+
   ionViewDidLoad() {
     // console.log('ionViewDidLoad MainPage');
   }
@@ -169,7 +177,7 @@ export class MainPage {
     loading.present();
 
     this.customers = [];
-    
+
     let limit = this.perPage;
     let offset = 0;
 
@@ -178,7 +186,11 @@ export class MainPage {
         loading.dismiss();
         if (data.ok) {
           // this.customers = data.rows;
-          data.rows.forEach(v => {
+          let encryptedtext = data.data;
+          let decryptedText = this.encryptProvider.decrypt(encryptedtext);
+          let rows = JSON.parse(decryptedText);
+
+          rows.forEach(v => {
             let obj: any = {
               id: v.id,
               lat: v.lat,
@@ -205,9 +217,10 @@ export class MainPage {
         console.log(error);
         loading.dismiss();
       });
-  }  
+  }
 
   ionViewWillEnter() {
+    this.customers = [];
     if (this.query) {
       this._doSearch(this.query);
     } else {
@@ -221,46 +234,54 @@ export class MainPage {
   }
 
   doInfinite(infiniteScroll) {
-    if (this.startRecord <= this.total) {
-      this.startRecord += this.perPage;
+    if (!this.query) {
+      if (this.startRecord <= this.total) {
+        this.startRecord += this.perPage;
 
-      let limit = this.perPage;
-      let offset = this.startRecord;
+        let limit = this.perPage;
+        let offset = this.startRecord;
 
-      this.customerProvider.getCustomers(this.token, limit, offset)
-        .then((data: any) => {
-          infiniteScroll.complete();
-          if (data.ok) {
-            // this.customers = data.rows;
-            data.rows.forEach(v => {
-              let obj: any = {
-                id: v.id,
-                lat: v.lat,
-                lng: v.lng,
-                sex: v.sex,
-                telephone: v.telephone,
-                customer_type_id: v.customer_type_id,
-                first_name: v.first_name,
-                last_name: v.last_name,
-                email: v.email,
-                imageBase64: v.image,
-                image: v.image ? 'data:image/jpeg;base64,' + v.image : null
-              };
-              this.customers.push(obj);
-            });
-          } else {
+        this.customerProvider.getCustomers(this.token, limit, offset)
+          .then((data: any) => {
             infiniteScroll.complete();
-            if (data.code === 403) {
-              this.logout();
+            if (data.ok) {
+              // this.customers = data.rows;
+              let encryptedtext = data.data;
+              let decryptedText = this.encryptProvider.decrypt(encryptedtext);
+              let rows = JSON.parse(decryptedText);
+
+              rows.forEach(v => {
+                let obj: any = {
+                  id: v.id,
+                  lat: v.lat,
+                  lng: v.lng,
+                  sex: v.sex,
+                  telephone: v.telephone,
+                  customer_type_id: v.customer_type_id,
+                  first_name: v.first_name,
+                  last_name: v.last_name,
+                  email: v.email,
+                  imageBase64: v.image,
+                  image: v.image ? 'data:image/jpeg;base64,' + v.image : null
+                };
+                this.customers.push(obj);
+              });
             } else {
-              console.log(data.error);
+              infiniteScroll.complete();
+              if (data.code === 403) {
+                this.logout();
+              } else {
+                console.log(data.error);
+              }
             }
-          }
-        }, error => {
-          infiniteScroll.complete();
-          console.log(error);
-        });
-      
+          }, error => {
+            infiniteScroll.complete();
+            console.log(error);
+          });
+
+      } else {
+        infiniteScroll.complete();
+      }
     } else {
       infiniteScroll.complete();
     }
