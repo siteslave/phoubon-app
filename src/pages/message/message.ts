@@ -1,22 +1,58 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
 
-/*
-  Generated class for the Message page.
+import { User } from '../../providers/user';
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-message',
-  templateUrl: 'message.html'
+  templateUrl: 'message.html',
+  providers: [User]
 })
 export class MessagePage {
+  userId: number;
+  message: string;
+  users: Array<any>;
+  token: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public userProvider: User,
+    public toastCtrl: ToastController
+  ) {
+    this.token = localStorage.getItem('token');
+  }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad MessagePage');
+  ionViewWillEnter() {
+    this.userProvider.getUsers(this.token)
+      .then((res: any) => {
+        this.users = res.rows;
+      }, (error) => { })
+  }
+
+  sendMessage() {
+    this.userProvider.sendMessage(this.token, this.userId, this.message)
+      .then((res: any) => {
+        if (res.ok) {
+          let toast = this.toastCtrl.create({
+            message: 'ส่งข้อความสำเร็จ',
+            duration: 3000
+          });
+          toast.present();
+        } else {
+          let toast = this.toastCtrl.create({
+            message: 'เกิดข้อผิดพลาด',
+            duration: 3000
+          });
+          toast.present();
+        }
+      }, (error) => {
+          let toast = this.toastCtrl.create({
+            message: 'เกิดข้อผิดพลาด',
+            duration: 3000
+          });
+          toast.present();
+      });
   }
 
 }
