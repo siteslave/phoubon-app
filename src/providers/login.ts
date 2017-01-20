@@ -11,13 +11,13 @@ export class Login {
 
   }
 
-  doLogin(username, password) {
+  doLogin(encryptText) {
     return new Promise((resolve, reject) => {
       let url = `${this.url}/users/login`;
       // let url = this.url + '/users/login';
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
-      let body = { username: username, password: password };
+      let body = { data: encryptText };
       this.http.post(url, body, options)
         .map(res => res.json())
         .subscribe(data => {

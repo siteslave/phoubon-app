@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Login } from '../../providers/login';
+import { Encrypt } from '../../providers/encrypt';
+
 import { TabsPage } from '../tabs/tabs';
 
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
-  providers: [Login]
+  providers: [Login, Encrypt]
 })
 export class LoginPage {
   username: string;
@@ -15,11 +17,17 @@ export class LoginPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public loginProvider: Login
+    public loginProvider: Login,
+    public encryptProvider: Encrypt
   ) { }
 
   doLogin() {
-    this.loginProvider.doLogin(this.username, this.password)
+    let user: any = {
+      username: this.username,
+      password: this.password
+    };
+    let encryptText = this.encryptProvider.encrypt(JSON.stringify(user));
+    this.loginProvider.doLogin(encryptText)
       .then((res: any) => {
         if (res.ok) {
           let token = res.token;

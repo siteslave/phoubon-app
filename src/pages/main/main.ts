@@ -97,7 +97,7 @@ export class MainPage {
         loading.dismiss();
       });
   }
-  
+
   search(event) {
     this.query = event.target.value || null;
     if (this.query) {
@@ -214,6 +214,7 @@ export class MainPage {
       this.customerProvider.getTotal(this.token)
         .then((res: any) => {
           this.total = res.total;
+          this.startRecord = 0;
           this.getUsers();
         });
     }

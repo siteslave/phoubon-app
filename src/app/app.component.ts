@@ -19,7 +19,7 @@ export class MyApp {
   ) {
     let that = this;
     platform.ready().then(() => {
-      StatusBar.styleDefault();
+      StatusBar.backgroundColorByHexString('#34465d');
       Splashscreen.hide();
 
       that.events.subscribe('logout', () => {

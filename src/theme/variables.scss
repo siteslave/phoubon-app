@@ -24,11 +24,12 @@ $font-path: "../assets/fonts";
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #387ef5,
+  primary:    #34465d,
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  line:       #00c300
 );
 
 
@@ -76,3 +77,17 @@ $colors: (
 
 @import "roboto";
 @import "noto-sans";
+
+@font-face {
+    font-family: 'thaisanslite';
+    src: url('../assets/fonts/thaisanslite_r1-webfont.woff2') format('woff2'),
+         url('../assets/fonts/thaisanslite_r1-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+* {
+  font-family: 'thaisanslite', sans-serif;
+  font-size: 2rem;
+}
